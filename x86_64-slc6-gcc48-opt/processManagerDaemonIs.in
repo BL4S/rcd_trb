@@ -1,0 +1,8 @@
+document cmt_action_runner processManagerDaemonIs -group=cmt_actions action_value=cd'"'" "'"'../data;'"'"                                                    "'"'is_generator.sh'"'" "'"'-n'"'" "'"'-cpp'"'" "'"'-d'"'" "'"'../ProcessManager'"'" "'"'pmg_is_info.xml;'"'" 						   "'"'is_generator.sh'"'" "'"'-s'"'" "'"'-cpp'"'" "'"'-d'"'" "'"'../ProcessManager'"'" "'"'pmg_is_info.xml;'"'" 						   "'"'is_generator.sh'"'" "'"'-p'"'" "'"'pmg'"'" "'"'-s'"'" "'"'-java'"'" "'"'-d'"'" "'"'../x86_64-slc6-gcc48-opt/'"'" "'"'pmg_is_info.xml;'"'"                                                    "'"'is_generator.sh'"'" "'"'-p'"'" "'"'pmg'"'" "'"'-n'"'" "'"'-java'"'" "'"'-d'"'" "'"'../x86_64-slc6-gcc48-opt/'"'" "'"'pmg_is_info.xml
+make_fragment make_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/make_header
+make_fragment dependencies /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependencies
+make_fragment cleanup_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cleanup_header
+make_fragment cmt_action_runner -header=cmt_action_runner_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cmt_action_runner
+make_fragment cmt_action_runner_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cmt_action_runner_header
+make_fragment document_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/document_header
+make_fragment dependency /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependency

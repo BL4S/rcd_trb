@@ -1,0 +1,156 @@
+elect an option:
+   1 Help
+   3 Open receiver UDP
+   4 Open sender UDP
+   5 receive UDP
+   6 send UDP
+   7 Close receiver UDP
+   8 Close sender UDP
+   0 Exit
+Your choice [1] :3
+ Port Number
+[1234] :34082
+ Port Number = 34082
+ return = 0, errno = 0
+
+Select an option:
+   1 Help
+   3 Open receiver UDP
+   4 Open sender UDP
+   5 receive UDP
+   6 send UDP
+   7 Close receiver UDP
+   8 Close sender UDP
+   0 Exit
+Your choice [3] :5
+Waiting for message...
+Received a datagram with length 1024
+word number 0 = 10096
+word number 0 = 2770
+word number 1 = 196707
+word number 1 = 30063
+word number 2 = 180
+word number 2 = b4
+word number 3 = 131073
+word number 3 = 20001
+word number 4 = 882
+word number 4 = 372
+word number 5 = 3263178
+word number 5 = 31caca
+word number 6 = 13238313
+word number 6 = ca0029
+word number 7 = 0
+word number 7 = 0
+word number 8 = 538749444
+word number 8 = 201caa04
+word number 9 = 1089996542
+word number 9 = 40f806fe
+
+Select an option:
+   1 Help
+   3 Open receiver UDP
+   4 Open sender UDP
+   5 receive UDP
+   6 send UDP
+   7 Close receiver UDP
+   8 Close sender UDP
+   0 Exit
+Your choice [5] :5
+Waiting for message...
+Received a datagram with length 1024
+word number 0 = 10008
+word number 0 = 2718
+word number 1 = 196707
+word number 1 = 30063
+word number 2 = 180
+word number 2 = b4
+word number 3 = 131073
+word number 3 = 20001
+word number 4 = 882
+word number 4 = 372
+word number 5 = 3277828
+word number 5 = 320404
+word number 6 = 262185
+word number 6 = 40029
+word number 7 = 0
+word number 7 = 0
+word number 8 = 538985187
+word number 8 = 202042e3
+word number 9 = 1089996689
+word number 9 = 40f80791
+
+Select an option:
+   1 Help
+   3 Open receiver UDP
+   4 Open sender UDP
+   5 receive UDP
+   6 send UDP
+   7 Close receiver UDP
+   8 Close sender UDP
+   0 Exit
+Your choice [5] :5
+Waiting for message...
+Received a datagram with length 1024
+word number 0 = 10056
+word number 0 = 2748
+word number 1 = 196707
+word number 1 = 30063
+word number 2 = 148
+word number 2 = 94
+word number 3 = 131073
+word number 3 = 20001
+word number 4 = 882
+word number 4 = 372
+word number 5 = 3293248
+word number 5 = 324040
+word number 6 = 4194337
+word number 6 = 400021
+word number 7 = 0
+word number 7 = 0
+word number 8 = 539231702
+word number 8 = 202405d6
+word number 9 = 1089996657
+word number 9 = 40f80771
+
+Select an option:
+   1 Help
+   3 Open receiver UDP
+   4 Open sender UDP
+   5 receive UDP
+   6 send UDP
+   7 Close receiver UDP
+   8 Close sender UDP
+   0 Exit
+Your choice [5] :5
+Waiting for message...
+Received a datagram with length 1024
+word number 0 = 10008
+word number 0 = 2718
+word number 1 = 196707
+word number 1 = 30063
+word number 2 = 180
+word number 2 = b4
+word number 3 = 131073
+word number 3 = 20001
+word number 4 = 882
+word number 4 = 372
+word number 5 = 3308411
+word number 5 = 327b7b
+word number 6 = 8060969
+word number 6 = 7b0029
+word number 7 = 0
+word number 7 = 0
+word number 8 = 539475141
+word number 8 = 2027bcc5
+word number 9 = 1089996675
+word number 9 = 40f80783
+
+Select an option:
+   1 Help
+   3 Open receiver UDP
+   4 Open sender UDP
+   5 receive UDP
+   6 send UDP
+   7 Close receiver UDP
+   8 Close sender UDP
+   0 Exit

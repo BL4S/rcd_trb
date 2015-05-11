@@ -1,0 +1,32 @@
+application server_UDP -prototypes test/server_UDP.cpp
+make_fragment make_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/make_header
+make_fragment dependencies /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependencies
+make_fragment cleanup_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cleanup_header
+make_fragment java_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/java_header
+make_fragment application_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/application_header
+make_fragment application /afs/cern.ch/atlas/project/tdaq/inst/tdaq-common/tdaq-common-01-31-00/TDAQCPolicy/TDAQCPolicyInt/cmt/fragments/application
+make_fragment check_java /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/check_java
+make_fragment cleanup_application /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cleanup_application
+make_fragment cleanup_objects /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cleanup_objects
+make_fragment check_application /afs/cern.ch/atlas/project/tdaq/inst/tdaq/tdaq-05-05-00/TDAQPolicy/cmt/fragments/check_application
+make_fragment fortran /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/fortran
+make_fragment c /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/c
+make_fragment cpp /afs/cern.ch/atlas/project/tdaq/inst/tdaq-common/tdaq-common-01-31-00/TDAQCPolicy/TDAQCPolicyInt/cmt/fragments/cpp
+make_fragment java /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/java
+make_fragment yacc /afs/cern.ch/atlas/project/tdaq/inst/tdaq/tdaq-05-05-00/OnlinePolicy/cmt/fragments/yacc
+make_fragment lex /afs/cern.ch/atlas/project/tdaq/inst/tdaq/tdaq-05-05-00/OnlinePolicy/cmt/fragments/lex
+make_fragment idl2cpp -suffix=o /afs/cern.ch/atlas/project/tdaq/inst/tdaq/tdaq-05-05-00/omni/cmt/fragments/idl2cpp
+make_fragment protos_header /afs/cern.ch/atlas/project/tdaq/inst/tdaq/tdaq-05-05-00/TDAQPolicy/cmt/fragments/protos_header
+make_fragment buildproto /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/buildproto
+make_fragment dependencies_and_triggers /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependencies_and_triggers
+make_fragment java /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/java
+make_fragment java_copy /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/java_copy
+make_fragment cleanup /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cleanup
+make_fragment cleanup_java /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cleanup_java
+language fortran -suffix=f -suffix=F -linker=$(flink) -preprocessor_command=$(ppcmd)
+language c -suffix=c -linker=$(clink) -prototypes -dependencies_options=
+language c++ -suffix=C -suffix=cc -suffix=cxx -suffix=cpp -linker=$(cpplink) -fragment=cpp -dependencies_options=
+language java -suffix=java -linker=java
+language yacc -suffix=y -linker=$(clink) -prototypes
+language lex -suffix=l -linker=$(clink) -prototypes
+language idl -suffix=idl -linker=$(cpplink) -fragment=idl2cpp

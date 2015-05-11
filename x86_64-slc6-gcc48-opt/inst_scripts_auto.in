@@ -1,0 +1,8 @@
+document installer inst_scripts_auto -group=inst ../scripts/*.pl ../scripts/*.sh ../scripts/*.csh ../scripts/*.tcsh ../scripts/*.ex ../scripts/*.py listname=inst_files.noarch.scr.auto. install_dir=/afs/cern.ch/user/d/daquser/public/ATLAS_DAQ/DataFlow/installed/share/bin rpm_dirs=/afs/cern.ch/user/d/daquser/public/ATLAS_DAQ/DataFlow/installed/share'"'" "'"'/afs/cern.ch/user/d/daquser/public/ATLAS_DAQ/DataFlow/installed
+make_fragment make_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/make_header
+make_fragment dependencies /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependencies
+make_fragment cleanup_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cleanup_header
+make_fragment installer -header=installer_header /afs/cern.ch/atlas/project/tdaq/inst/tdaq-common/tdaq-common-01-31-00/TDAQCPolicy/TDAQCPolicyInt/cmt/fragments/installer
+make_fragment installer_header /afs/cern.ch/atlas/project/tdaq/inst/tdaq-common/tdaq-common-01-31-00/TDAQCPolicy/TDAQCPolicyInt/cmt/fragments/installer_header
+make_fragment document_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/document_header
+make_fragment dependency /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependency

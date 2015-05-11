@@ -1,0 +1,51 @@
+#ifndef V792EXCEPTION_H
+#define V792EXCEPTION_H
+
+#include "DFExceptions/ROSException.h"
+#include <string>
+#include <iostream>
+
+namespace RCD 
+{
+  using namespace ROS;
+
+  class V792Exception : public ROSException 
+  {
+  public:
+    enum ErrorCode 
+    {
+      USERWARNING = 1,
+      V792_DUMMY2
+    };
+    V792Exception(ErrorCode errorCode);
+    V792Exception(ErrorCode errorCode, std::string description);
+    V792Exception(ErrorCode errorCode, const ers::Context& context);
+    V792Exception(ErrorCode errorCode, std::string description, const ers::Context& context);
+    V792Exception(const std::exception& cause, ErrorCode error, std::string description, const ers::Context& context);
+
+    virtual ~V792Exception() throw() { }
+
+  protected:
+    virtual std::string getErrorString(u_int errorId) const;
+  };
+  
+  inline std::string V792Exception::getErrorString(u_int errorId) const 
+  {
+    std::string rc;
+    switch (errorId) 
+    {
+    case USERWARNING:
+      rc = "Something went wrong. Read on:";
+      break;
+    case V792_DUMMY2:
+      rc = "Dummy2";
+      break;
+    default:
+      rc = "";
+      break;
+    }
+    return rc;
+  }
+  
+}
+#endif //V792EXCEPTION_H

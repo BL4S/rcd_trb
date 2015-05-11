@@ -1,0 +1,89 @@
+/********************************************************/
+/* Header file for the CAEN V792 QDC			*/ 
+/*							*/
+/* Date: 31 October 2006				*/ 
+/* Author: Markus Joos					*/
+/*							*/
+/*** C 2006 - The software with that certain something **/
+
+#ifndef _V792_H
+#define _V792_H
+
+/*************/
+/* Constants */
+/*************/
+#define V792_CHANNELS 32
+
+/********************/
+/* Type definitions */
+/********************/
+typedef struct
+{
+  u_int output_buffer;                 //0x0000
+  u_short dummy1[2046];                //0x0004 - 0x0FFE
+  u_short firmware_revision;           //0x1000
+  u_short geo_address;                 //0x1002
+  u_short mcst_cblt_address;           //0x1004
+  u_short bit_set_1;                   //0x1006
+  u_short bit_clear_1;                 //0x1008
+  u_short interrupt_level;             //0x100A
+  u_short interrupt_vector;            //0x100C
+  u_short status_register_1;           //0x100E
+  u_short control_register_1;          //0x1010
+  u_short ader_high;                   //0x1012
+  u_short ader_low;                    //0x1014
+  u_short single_shot_reset;           //0x1016
+  u_short dummy2[1];                   //0x1018
+  u_short mcst_cblt_ctrl;              //0x101A
+  u_short dummy3[2];                   //0x101C - 0x101E
+  u_short event_trigger_register;      //0x1020
+  u_short status_register_2;           //0x1022
+  u_short event_counter_l;             //0x1024
+  u_short event_counter_h;             //0x1026
+  u_short increment_event;             //0x1028
+  u_short increment_offset;            //0x102A
+  u_short load_test_register;          //0x102C
+  u_short fclr_window;                 //0x102E
+  u_short dummy4[1];                   //0x1030
+  u_short bit_set_2;                   //0x1032
+  u_short bit_clear_2;                 //0x1034
+  u_short w_memory_test_address;       //0x1036
+  u_short memory_test_word_high;       //0x1038
+  u_short memory_test_word_low;        //0x103A
+  u_short crate_select;                //0x103C
+  u_short test_event_write;            //0x103E
+  u_short event_counter_reset;         //0x1040
+  u_short dummy5[15];                  //0x1042 - 0x105E
+  u_short iped;                        //0x1060
+  u_short dummy6[1];                   //0x1062
+  u_short r_test_address;              //0x1064
+  u_short dummy7[1];                   //0x1066
+  u_short sw_comm;                     //0x1068
+  u_short dummy8[3];                   //0x106A - 0x106E
+  u_short aad;                         //0x1070
+  u_short bad;                         //0x1072
+  u_short dummy9[6];                   //0x1074 - 0x107E
+  u_short thresholds[V792_CHANNELS];   //0x1080 - 0x10BE
+  u_short dummy10[14259];              //0x10C0 - 0x8024
+  u_short oui_msb;                     //0x8026
+  u_short dummy11[1];                  //0x8028
+  u_short oui;                         //0x802A
+  u_short dummy12[1];                  //0x802C
+  u_short oui_lsb;                     //0x802E
+  u_short dummy13[1];                  //0x8030
+  u_short version;                     //0x8032
+  u_short dummy14[1];                  //0x8034
+  u_short board_id_msb;                //0x8036
+  u_short dummy15[1];                  //0x8038
+  u_short board_id;                    //0x803A
+  u_short dummy16[1];                  //0x803C
+  u_short board_id_lsb;                //0x803E
+  u_short dummy17[7];                  //0x8040 - 0x804C
+  u_short revision;                    //0x804E
+  u_short dummy18[1881];               //0x8050 - 0x8F00
+  u_short serial_msb;                  //0x8F02
+  u_short dummy19[1];                  //0x8F04
+  u_short serial_lsb;                  //0x8F06
+} volatile v792_regs_t;
+
+#endif

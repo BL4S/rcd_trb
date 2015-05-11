@@ -1,0 +1,222 @@
+/************************************************************************/
+/*									*/
+/* This is a simple  program to calculate mean and sigma of a certain   */
+/* channel for the CAEN V794						*/
+/*									*/
+/* Date:   15 July 2014							*/
+/* Author: Cenk Yildiz							*/
+/*									*/
+/**************** C 2006 - A nickel program worth a dime ****************/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <unistd.h>
+#include "rcc_error/rcc_error.h"
+#include "vme_rcc/vme_rcc.h"
+#include "DFDebug/DFDebug.h"
+#include "ROSGetInput/get_input.h"
+#include "rcd_v792/v792.h"
+#include <cmath>
+#include <iostream>
+#include <ctime>
+
+
+/**************/
+/* Prototypes */
+/**************/
+void mainhelp(void);
+void calibration(int voltage, int channel);
+
+
+/***********/
+/* Globals */
+/***********/
+v792_regs_t *v792;
+int sleeptime=0;
+
+/*****************************/
+int main(int argc, char **argv)
+/*****************************/
+{
+  int handle;
+  u_long value;
+  u_int ret, v792_base = 0x01000000;
+  char c;
+  static VME_MasterMap_t master_map = {0x00100000, 0x10000, VME_A32, 0};
+  int voltage = 0;
+  int channel = 0;
+
+
+  while ((c = getopt(argc, argv, "c:v:")) != -1)
+  {
+    switch (c) 
+    {
+      case 'c':	
+      {
+        channel = atoi(optarg); 
+      }
+      case 'v':	
+      {
+        voltage = atoi (optarg); 
+      }
+      break;
+
+      default:
+	printf("Invalid option %c\n", c);
+	printf("Usage: %s  [options]: \n", argv[0]);
+	printf("Valid options are ...\n");
+	printf("-c: QDC channel\n");
+	printf("-v: Provided voltage in mV \n");
+	printf("\n");
+	exit(-1);
+    }
+  }
+
+  master_map.vmebus_address = v792_base;
+
+  ret = VME_Open();
+  if (ret != VME_SUCCESS)
+  {
+    VME_ErrorPrint(ret);
+    exit(-1);
+  }
+
+  ret = VME_MasterMap(&master_map, &handle);
+  if (ret != VME_SUCCESS)
+  {
+    VME_ErrorPrint(ret);
+    exit(-1);
+  }
+
+  ret = VME_MasterMapVirtualLongAddress(handle, &value);
+  if (ret != VME_SUCCESS)
+  {
+    VME_ErrorPrint(ret);
+    exit(-1);
+  }
+  v792 = (v792_regs_t *) value;
+  
+  /**********************************/
+  calibration(voltage,channel);
+  /**********************************/
+
+  ret = VME_MasterUnmap(handle);
+  if (ret != VME_SUCCESS)
+    VME_ErrorPrint(ret);
+  
+  ret = VME_Close();
+  if (ret != VME_SUCCESS)
+    VME_ErrorPrint(ret);
+    
+  exit(0);
+}
+
+/***************/
+void calibration(int voltage, int chn)
+/***************/
+{
+  int ch;
+  u_int dok, slot, crate, evnum, loop, num;
+  u_int valid[32], un[32], ov[32],  nevent[32], data, channel,i,j=0;
+  long int evdata[32], evdata2[32];
+  u_int iped = 180;
+  u_short value;
+  float mean[32],sigma[32];
+  int N = 1000;
+
+
+    //Resetting module and setting pedestal
+    v792->bit_set_1    = 0x80;         //start soft reset
+    v792->bit_clear_1  = 0x90;         //end soft reset & disable ADER
+    v792->crate_select = 1;            //Set (dummy) crate number
+    v792->bit_set_2    = 0x18;         //disable over range and under threshold filters
+    v792->bit_set_2    = 0x4;          //initiate clear data
+    v792->bit_clear_2  = 0x4;          //complete clear data
+    v792->iped         = iped;         //common pedestal current
+
+    //What comes now may not be necessary as I am just programming the module with its default
+    //values. However, it clarifies how he module will be used
+    v792->interrupt_level        = 0;  //Disable the interrupt 
+    v792->interrupt_vector       = 0;  //Disable the interrupt
+    v792->event_trigger_register = 0;  //Disable the interrupt
+    v792->event_counter_reset    = 0;  //Reset event counter
+
+
+    //Resetting event data
+    for (ch = 0; ch < 32; ch++)
+    {
+      evdata[ch]  =0;
+      evdata2[ch] =0;
+      nevent[ch]  =0;
+
+      mean[ch]  =0.;
+      sigma[ch] =0.;
+    }
+
+
+
+    for (i = 0; i < N; i++)
+    {
+     // if(i%(N/10) == 0) std::cout << "%" << (double)i/N*100 << "\tcompleted!"  << std::endl;
+      while (1)
+      {
+        value = v792->status_register_2;
+
+        data = v792->output_buffer;
+        if (((data >> 24) & 0x7) == 2) //header found
+        {
+          break;
+        }
+      }
+      crate = (data >> 16) & 0xff;
+      slot = data >> 27;
+      num = (data >> 8) & 0x3f;
+
+      for (loop = 0; loop < num; loop++)
+      {
+        data = v792->output_buffer;
+
+        channel = (data >> 16) & 0x3f;
+
+        if (channel == chn)
+        {
+          evdata[channel]  += data & 0xfff;
+          evdata2[channel] += (long int)((data & 0xfff)*(data & 0xfff));
+          un[channel]       = (data >> 13) & 0x1;
+          ov[channel]       = (data >> 12) & 0x1;
+          nevent[channel] += 1;
+
+          dok = (data >> 24) & 0x7;
+
+          if (dok)
+            valid[(data >> 16) & 0x3f] = 0;
+          else
+            valid[(data >> 16) & 0x3f] = 1;
+        }
+      }
+    }
+
+    //std::cout << "%" << (double)i/N*100 << "\tcompleted!"  << std::endl;
+
+    mean[chn]  =  evdata[chn]*1.0/nevent[chn];
+    sigma[chn] = std::sqrt(evdata2[chn]*1.0/nevent[chn] - mean[chn]*mean[chn]);
+
+    printf("%d   %6.2lf  %6.2lf\n",voltage , mean[chn], sigma[chn]);
+
+  return;
+
+}
+
+/*****************/
+void mainhelp(void)
+/*****************/
+{
+  printf("\n=========================================================================\n");
+  printf("Contact markus.joos@cern.ch if you need help\n");
+  printf("=========================================================================\n\n");
+}
+
+
+
+

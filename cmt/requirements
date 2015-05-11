@@ -1,0 +1,50 @@
+package rcd_trb
+
+author  markus.joos@cern.ch
+manager markus.joos@cern.ch
+
+#==========================================================
+public
+#==========================================================
+use TDAQPolicy
+use ROSModules
+use DFSubSystemItem
+use DFDebug
+use DFThreads
+use ROSMemoryPool
+use ROSEventFragment
+use ROSBufferManagement
+use oh
+
+
+private
+#==========================================================
+library ReadoutModuleTRB	"ModuleTRB.cpp DataChannelTRB.cpp"
+#----------------------------------------------------------
+application  trbscope           test/trbscope.cpp
+application  udp_tcp_sender_receiver           test/udp_tcp_sender_receiver.cpp
+
+application  client_TCP           test/client_TCP.cpp
+application  server_TCP           test/server_TCP.cpp
+application  client_UDP           test/client_UDP.cpp
+application  server_UDP           test/server_UDP.cpp
+#----------------------------------------------------------
+macro trbscopelinkopts            "-lgetinput -lrcc_time_stamp"
+macro udp_tcp_sender_receiverlinkopts            "-lgetinput"
+
+macro ReadoutModuleTRB_shlibflags "-lSubSystemItem -lDFDebug"	
+#==========================================================
+document is-generation DataChannelTRBInfo -s=../schema namespace="ROS" header_dir="ROSInfo" TRBInfo.schema.xml
+
+public
+#==========================================================
+apply_pattern install_libs files="libReadoutModuleTRB.so"
+apply_pattern install_apps files="trbscope"
+
+#----------------------------------------------------------
+apply_pattern install_data    name=schema  src_dir="../schema" files="*.xml"
+# IS classes
+apply_pattern install_headers name=is_info src_dir="$(bin)/ROSInfo" files="*.h" target_dir="../ROSInfo"
+#----------------------------------------------------------
+## Automated generation of repository db
+macro sw.repository.is-info-file.share/data/rcd_trb/TRBInfo.schema.xml:name "TRB DataChannel IS xml description"
