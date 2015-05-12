@@ -1,8 +1,0 @@
-document installer inst_headers_bin_auto -group=inst ../x86_64-slc6-gcc48-opt//rcd_trb/*.h ../x86_64-slc6-gcc48-opt//rcd_trb/*.hh ../x86_64-slc6-gcc48-opt//rcd_trb/*.hpp ../x86_64-slc6-gcc48-opt//rcd_trb/*.hxx ../x86_64-slc6-gcc48-opt//rcd_trb/*.idl ../x86_64-slc6-gcc48-opt//rcd_trb/*.i ../x86_64-slc6-gcc48-opt//rcd_trb/*.ii ../x86_64-slc6-gcc48-opt//rcd_trb/*.inl ../x86_64-slc6-gcc48-opt//rcd_trb/*.inc listname=inst_files.x86_64-slc6-gcc48-opt.head.bin.auto. install_dir=/afs/cern.ch/user/d/daquser/public/ATLAS_DAQ/DataFlow/installed/x86_64-slc6-gcc48-opt/include/rcd_trb rpm_dirs=/afs/cern.ch/user/d/daquser/public/ATLAS_DAQ/DataFlow/installed/x86_64-slc6-gcc48-opt/include'"'" "'"'/afs/cern.ch/user/d/daquser/public/ATLAS_DAQ/DataFlow/installed/x86_64-slc6-gcc48-opt'"'" "'"'/afs/cern.ch/user/d/daquser/public/ATLAS_DAQ/DataFlow/installed
-make_fragment make_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/make_header
-make_fragment dependencies /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependencies
-make_fragment cleanup_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cleanup_header
-make_fragment installer -header=installer_header /afs/cern.ch/atlas/project/tdaq/inst/tdaq-common/tdaq-common-01-31-00/TDAQCPolicy/TDAQCPolicyInt/cmt/fragments/installer
-make_fragment installer_header /afs/cern.ch/atlas/project/tdaq/inst/tdaq-common/tdaq-common-01-31-00/TDAQCPolicy/TDAQCPolicyInt/cmt/fragments/installer_header
-make_fragment document_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/document_header
-make_fragment dependency /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependency

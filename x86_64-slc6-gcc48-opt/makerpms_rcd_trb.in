@@ -1,8 +1,0 @@
-document rpmbuilder makerpms_rcd_trb -group=rpm RPM_arch=noarch reloc_prefix=/afs/cern.ch/atlas/project/tdaq/cmt prefix=/afs/cern.ch/user/d/daquser/public/ATLAS_DAQ/DataFlow project=ATLAS_DAQ patch_level=0 package_rpmversion=0
-make_fragment make_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/make_header
-make_fragment dependencies /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependencies
-make_fragment cleanup_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cleanup_header
-make_fragment rpmbuilder -header=rpmbuilder_header /afs/cern.ch/atlas/project/tdaq/inst/tdaq-common/tdaq-common-01-31-00/TDAQCPolicy/TDAQCPolicyInt/cmt/fragments/rpmbuilder
-make_fragment rpmbuilder_header /afs/cern.ch/atlas/project/tdaq/inst/tdaq-common/tdaq-common-01-31-00/TDAQCPolicy/TDAQCPolicyInt/cmt/fragments/rpmbuilder_header
-make_fragment document_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/document_header
-make_fragment dependency /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependency

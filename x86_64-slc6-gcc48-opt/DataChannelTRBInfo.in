@@ -1,7 +1,0 @@
-document is-generation DataChannelTRBInfo ../schema/TRBInfo.schema.xml namespace=ROS header_dir=ROSInfo
-make_fragment make_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/make_header
-make_fragment dependencies /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependencies
-make_fragment cleanup_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/cleanup_header
-make_fragment is-generation /afs/cern.ch/atlas/project/tdaq/inst/tdaq/tdaq-05-05-00/ROSUtilities/cmt/fragments/is-generation
-make_fragment document_header /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/document_header
-make_fragment dependency /afs/cern.ch/sw/contrib/CMT/v1r25p20130606/mgr/fragments/dependency
