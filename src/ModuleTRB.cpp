@@ -58,7 +58,7 @@ void ModuleTRB::setup(DFCountedPointer<Config> configuration)
   m_port = configuration->getInt("IPport");
   m_id = configuration->getInt("channelId", 0);
   
-  DEBUG_TEXT(DFDB_RCDEXAMPLE, 20, "ModuleTRB::setup: IPport = " << HEX(m_port));
+  DEBUG_TEXT(DFDB_RCDEXAMPLE, 20, "ModuleTRB::setup: IPport = " << m_port);
 }
 
 
