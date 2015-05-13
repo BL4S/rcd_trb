@@ -3,6 +3,9 @@
 /* Date: 24 April 2015					*/ 
 /* Author: Markus Joos					*/
 /*							*/
+/* add error codes for UDP                              */
+/* J.O.Petersen                                         */
+/*                                                      */
 /*** C 2015 - The software with that certain something **/
 
 #ifndef TRBEXCEPTION_H
@@ -21,8 +24,10 @@ namespace RCD
   public:
     enum ErrorCode 
     {
-      USERWARNING = 1,
-      TRB_DUMMY2
+      UDP_OPEN = 1,
+      UDP_BIND,
+      UDP_CLOSE,
+      UDP_RECEIVE
     };
     TRBException(ErrorCode errorCode);
     TRBException(ErrorCode errorCode, std::string description);
@@ -41,11 +46,17 @@ namespace RCD
     std::string rc;
     switch (errorId) 
     {
-    case USERWARNING:
-      rc = "Something went wrong. Read on:";
+    case UDP_OPEN:
+      rc = " UDP Open socket failed";
       break;
-    case TRB_DUMMY2:
-      rc = "Dummy2";
+    case UDP_BIND:
+      rc = " UDP Bind socket failed";
+      break;
+    case UDP_CLOSE:
+      rc = " UDP Close socket failed";
+      break;
+    case UDP_RECEIVE:
+      rc = " UDP receive failed";
       break;
     default:
       rc = "";

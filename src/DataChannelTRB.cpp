@@ -79,12 +79,12 @@ int DataChannelTRB::getNextFragment(u_int* buffer, int max_size, u_int* status, 
 //      fsize += 4;
 //    }  
 //  }
-
+//int n = recvfrom(sock_receive,bufPtr, max_size*4, 0, (struct sockaddr *)&from,&fromlen);
   *bufPtr++ = 0x22abcd22;  fsize += 4;
   *bufPtr++ = 0x01020304;  fsize += 4;
   *bufPtr++ = 0x05060708;  fsize += 4;
   *bufPtr++ = 0x22abcd22;  fsize += 4;
-   
+
   if(fsize > max_size)
   { 
     fsize = max_size;
