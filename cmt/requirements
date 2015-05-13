@@ -22,7 +22,6 @@ private
 library ReadoutModuleTRB	"ModuleTRB.cpp DataChannelTRB.cpp"
 #----------------------------------------------------------
 application  trbscope           test/trbscope.cpp
-application  udp_tcp_sender_receiver           test/udp_tcp_sender_receiver.cpp
 
 application  client_TCP           test/client_TCP.cpp
 application  server_TCP           test/server_TCP.cpp
@@ -30,7 +29,6 @@ application  client_UDP           test/client_UDP.cpp
 application  server_UDP           test/server_UDP.cpp
 #----------------------------------------------------------
 macro trbscopelinkopts            "-lgetinput -lrcc_time_stamp"
-macro udp_tcp_sender_receiverlinkopts            "-lgetinput"
 
 macro ReadoutModuleTRB_shlibflags "-lSubSystemItem -lDFDebug"	
 #==========================================================
