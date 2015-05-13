@@ -9,11 +9,6 @@
 #ifndef _GET_INPUT_H
 #define _GET_INPUT_H
 
-#ifdef __cplusplus
-extern "C" 
-{
-#endif
-
   long getdec(void);
   long getdecd(long defa);
   unsigned long gethex(void);
@@ -26,10 +21,6 @@ extern "C"
   int ReadCard_int (char* filename, char* tag, int nr, int* i);
   int ReadCard_uint(char* filename, char* tag, int nr, unsigned int* u);
   int ReadCard_str (char* filename, char* tag, int nr, char* c);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
 

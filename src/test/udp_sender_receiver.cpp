@@ -18,7 +18,7 @@
 #include <string.h>
 #include <netdb.h>
 #include "trb.h"
-
+#include "get_input.h"
 /**************/
 /* Prototypes */
 /**************/
@@ -29,24 +29,11 @@ void receive(void);
 void send(void);
 void close_receiver(void);
 void close_sender(void);
-
-long getdec(void);
-long getdecd(long defa);
-unsigned long gethex(void);
-unsigned long gethexd(unsigned long defa);
-unsigned long long gethexdll(unsigned long long defa);
-char getfstchar(void);
-void getstrd(char* a, char* defa);
-float getfloatd(float defa);
-
 /***********/
 /* Globals */
 /***********/
 int sock_receive,sock_send;
-int length_receive;
 int length_send;
-socklen_t fromlen;
-struct sockaddr_in from;
 struct sockaddr_in server_send;
 
 /*****************************/
@@ -95,6 +82,7 @@ void open_receiver(void)
 {
   int trbport;
   struct sockaddr_in server;
+  int length_receive;
 
     printf(" Port Number \n");
     trbport = getdecd(1234);
@@ -126,7 +114,7 @@ void open_sender(void)
   struct hostent *hp;
 
     printf(" IP address of server \n");
-    getstrd(ipAddress,"137.138.89.83");
+    getstrd(ipAddress,(char *)"137.138.89.83");
     printf(" IP address of server = %s\n",ipAddress);
     printf(" Port Number\n ");
     trbport = getdecd(1234);
@@ -153,6 +141,8 @@ void receive(void)
   int n_receive;
   unsigned int  buf[1024];
   int n;
+  socklen_t fromlen;
+  struct sockaddr_in from;
   fromlen = sizeof(struct sockaddr_in);
   
   printf ("Number of messages =");
@@ -194,7 +184,7 @@ void send(void)
     printf("Going to send the message ...\n");
   //Send a message to a server from client
   for (int i=0; i<n_send; i++){
-  n = sendto(sock_send, (char *)buffer,40, 0, (struct sockaddr *)&server_send,length_send);
+  n = sendto(sock_send, (char *)buffer, n_length*4, 0, (struct sockaddr *)&server_send,length_send);
   if (n < 0)
   {
     perror("Failed to send the data");
@@ -228,174 +218,4 @@ void close_sender(void)
     perror("close_error");
    }
 }
-
-/* get ONE decimal integer */
-/***************/
-long getdec(void)
-/***************/
-{
-  char sbuf[20];   /* max 19 chars */
-  int nfield;
-  long nint;
-
-  do
-  {
-    fgets(sbuf, 20, stdin);
-    nfield = sscanf(sbuf, "%ld", &nint);
-    if (nfield < 1) printf(" ??? : ");
-  } while (nfield < 1);
-
-  return(nint);
-}
-/* get ONE hex integer */
-/************************/
-unsigned long gethex(void)
-/************************/
-{
-  char sbuf[20];   /* max 19 chars */
-  int nfield;
-  unsigned long nint;
-  
-   do
-  {
-    fgets(sbuf, 20, stdin);
-    nfield = sscanf(sbuf, "%lx", &nint);
-    if (nfield < 1) printf(" ??? : ");
-  } while (nfield < 1);
-
-  return(nint);
-}
-
-
-/* get first character */
-/*******************/
-char getfstchar(void)
-/*******************/
-{
-  char sbuf[20];   /* max 19 chars */
-
-  fgets(sbuf, 20, stdin);
-
-  return(sbuf[0]);
-}
-
-
-/* get ONE decimal integer with default*/
-/*********************/
-long getdecd(long defa)
-/*********************/
-{
-  char sbuf[20];   /* max 19 chars */
-  int nfield;
-  long nint;
-  
-  printf("[%ld] :", defa);
-  do
-  {
-    fgets(sbuf, 20, stdin);
-    if (strlen(sbuf) == 1)
-      return(defa);
-    nfield = sscanf(sbuf, "%ld", &nint);
-    if (nfield < 1)
-      printf(" ??? : ");
-  }
-  while (nfield < 1);
-  return(nint);
-}
-
-
-/* get ONE hex integer */
-/***************************************/
-unsigned long gethexd(unsigned long defa)
-/***************************************/
-{
-  char sbuf[20];   /* max 19 chars */
-  int nfield;
-  unsigned long nint;
-
-  printf("[0x%016lx] :", defa);
-  do
-  {
-    fgets(sbuf, 20, stdin);
-    if (strlen(sbuf) == 1)
-      return(defa);
-    nfield = sscanf(sbuf, "%lx", &nint);
-    if (nfield < 1)
-      printf(" ??? : ");
-      
-      }
-  while (nfield < 1);
-  return(nint);
-}
-
-
-/* get ONE 64bit hex integer */
-/***************************************************/
-unsigned long long gethexdll(unsigned long long defa)
-/***************************************************/
-{
-  char sbuf[20];   /* max 19 chars */
-  int nfield;
-  unsigned long long nint;
-
-  printf("[0x%016llx] :", defa);
-  do
-  {
-    fgets(sbuf, 20, stdin);
-    if (strlen(sbuf) == 1)
-      return(defa);
-    nfield = sscanf(sbuf, "%llx", &nint);
-    if (nfield < 1)
-      printf(" ??? : ");
-  }
-  while (nfield < 1);
-
-  return(nint);
-}
-
-/* get ONE hex float with default*/
-/*************************/
-float getfloatd(float defa)
-/*************************/
-{
-  char sbuf[20];   /* max 19 chars */
-  int nfield;
-  float nfloat;
-
-  printf("[%f] :", defa);
-  do
-  {
-    fgets(sbuf, 20, stdin);
-    if (strlen(sbuf) == 1)
-      return(defa);
-    nfield = sscanf(sbuf, "%f", &nfloat);
-    if (nfield < 1)
-      printf(" ??? : ");
-  }
-  while (nfield < 1);
-  return(nfloat);
-}
-
-
-/*  get string */
-/********************************/
-void getstrd(char* str, char* defa)
-/*********************************/
-{
-  char sbuf[256];   /* max 255 chars, HP Beck 16-02-99 */
-
-  printf("[%s] :", defa);
-  fgets(sbuf, 256, stdin);
-
-  if (sbuf[strlen(sbuf) - 1] == '\n')
-    sbuf[strlen(sbuf) - 1] = '\0';
-
-  if (strlen(sbuf)==0)
-    strcpy(str, defa);
-  else
-    strcpy(str, sbuf);
-  return;
-}
-
-
 
