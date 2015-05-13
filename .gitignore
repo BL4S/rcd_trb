@@ -1,2 +1,8 @@
+cmt/setup.sh
+cmt/setup.csh
+cmt/cleanup.sh
+cmt/cleanup.csh
+cmt/inst_files.*
+cmt/Makefile
 x86_64*
 *.swp
