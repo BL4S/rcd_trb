@@ -47,9 +47,9 @@ ModuleTRB::~ModuleTRB()   noexcept
 
 
 /************************************************************/
-void ModuleTRB::setup(DFCountedPointer<Config> configuration) 
+void ModuleTRB::setup(DFCountedPointer<Config> configuration)
 /************************************************************/
-{ 
+{
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 15, "ModuleTRB::setup: Entered");
 
   m_configuration = configuration;
@@ -57,7 +57,7 @@ void ModuleTRB::setup(DFCountedPointer<Config> configuration)
   //get IP parameters for the TRB MODULE
   m_port = configuration->getInt("IPport");
   m_id = configuration->getInt("channelId", 0);
-  
+
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 20, "ModuleTRB::setup: IPport = " << m_port);
 }
 
@@ -70,12 +70,12 @@ void ModuleTRB::configure(const daq::rc::TransitionCmd&)
   err_str rcc_err_str;
   struct sockaddr_in server;
 
-  //open UDP oport...
-  int sock_receive=socket(AF_INET, SOCK_DGRAM, 0);
-  if (sock_receive < 0)
+  //open UDP port...
+  m_socket =socket(AF_INET, SOCK_DGRAM, 0);
+  if (m_socket < 0)
   {
     DEBUG_TEXT(DFDB_RCDEXAMPLE, 5, "ModuleTRB::configure: Failed to create socket");
-    rcc_error_string(rcc_err_str, sock_receive);
+    rcc_error_string(rcc_err_str, m_socket);
     CREATE_ROS_EXCEPTION(ex1, TRBException, UDP_OPEN, rcc_err_str);
     throw ex1;
 
@@ -85,7 +85,7 @@ void ModuleTRB::configure(const daq::rc::TransitionCmd&)
   server.sin_family=AF_INET;
   server.sin_addr.s_addr=INADDR_ANY;
   server.sin_port=htons(m_port);
-  int ret = bind(sock_receive, (struct sockaddr *)&server,length_receive);
+  int ret = bind(m_socket, (struct sockaddr *)&server,length_receive);
 
   if (ret <0)
   {
@@ -98,9 +98,9 @@ void ModuleTRB::configure(const daq::rc::TransitionCmd&)
   DataChannelTRB *channel = new DataChannelTRB(m_id, 0, m_port, m_configuration);  //adapt to IP parameters
   m_dataChannels.push_back(channel);
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 15, "ModuleTRB::configure: Done");
-  
+
   //Initialize the TRB/FEB card
-  //...  
+  //...
 }
 
 
@@ -109,9 +109,19 @@ void ModuleTRB::unconfigure(const daq::rc::TransitionCmd&)
 /*********************************************************/
 {
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 15, "ModuleTRB::unconfigure: Entered");
+  err_str rcc_err_str;
 
   //close the IP port
+  int  ret;
+  ret = close(m_socket);
 
+  if (ret <0)
+  {
+    DEBUG_TEXT(DFDB_RCDEXAMPLE, 5, "ModuleTRB::configure: Failed to close socket");
+    rcc_error_string(rcc_err_str, ret);
+    CREATE_ROS_EXCEPTION(ex1, TRBException, UDP_CLOSE, rcc_err_str);
+    throw ex1;
+  }
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 15, "ModuleTRB::unconfigure: Done");
 }
 

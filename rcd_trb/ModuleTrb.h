@@ -38,6 +38,9 @@ namespace ROS
 
     // IP parameters of a module
     u_int m_port;
+
+    // Socket handle
+    int m_socket;
   };
 
   inline const std::vector<DataChannel *> *ModuleTRB::channels()
