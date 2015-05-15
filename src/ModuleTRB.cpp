@@ -93,7 +93,7 @@ void ModuleTRB::configure(const daq::rc::TransitionCmd&)
     throw ex1;
   }
 
-  DataChannelTRB *channel = new DataChannelTRB(m_id, 0, m_port, m_configuration);  //adapt to IP parameters
+  DataChannelTRB *channel = new DataChannelTRB(m_id, 0, m_socket, m_configuration);  //adapt to IP parameters
   m_dataChannels.push_back(channel);
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 15, "ModuleTRB::configure: Done ret=" << ret);
 

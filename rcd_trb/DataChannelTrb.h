@@ -18,7 +18,7 @@ namespace ROS
   public:    
     DataChannelTRB(u_int id,
 		    u_int configId,
-		    u_int trbport,
+		    int trbport,
 		    DFCountedPointer<Config> configuration,
 		    DataChannelTRBInfo* = new DataChannelTRBInfo());
     virtual ~DataChannelTRB() ;
@@ -30,7 +30,7 @@ namespace ROS
     DataChannelTRBInfo *m_statistics;  //for IS
     u_int m_channel_number;    
     u_int m_channelId;
-    u_int m_port;
+    int m_socket;
     
     enum Statuswords 
     {

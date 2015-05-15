@@ -6,6 +6,8 @@
 /*** C 2015 - The software with that certain something **/
 
 #include <stdint.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include "ROSUtilities/ROSErrorReporting.h"
 #include "DFDebug/DFDebug.h"
 #include "DFSubSystemItem/Config.h"
@@ -21,7 +23,7 @@ using namespace RCD;
 /*******************************************************************************************/
 DataChannelTRB::DataChannelTRB(u_int channelId,
 				 u_int channelIndex,
-				 u_int trbport,
+				 int trbsocket,
 				 DFCountedPointer<Config> configuration,
 				 DataChannelTRBInfo *info) :
   SingleFragmentDataChannel(channelId, channelIndex, 0, configuration, info)
@@ -30,9 +32,9 @@ DataChannelTRB::DataChannelTRB(u_int channelId,
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 15, "DataChannelTRB::constructor: Entered");
   m_statistics = info;
   m_channelId = channelId;
-  m_port = trbport;
+  m_socket = trbsocket;
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 20, "DataChannelTRB::constructor: channelId = " << m_channelId);
-  DEBUG_TEXT(DFDB_RCDEXAMPLE, 20, "DataChannelTRB::constructor: port = " << m_port);
+  DEBUG_TEXT(DFDB_RCDEXAMPLE, 20, "DataChannelTRB::constructor: sock = " << m_socket);
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 15, "DataChannelTRB::constructor: Done");
 }
 
@@ -63,7 +65,16 @@ int DataChannelTRB::getNextFragment(u_int* buffer, int max_size, u_int* status, 
 
   //Wait until there is an event ready
   //poll UDP port
+  int n = recv(m_socket,bufPtr,max_size * sizeof(int) - fsize,0);
+  if (n < 0)
+  {
+    DEBUG_TEXT(DFDB_RCDEXAMPLE, 5, "DataChannelTRB::getNextFragment: Failed to receive the data");
+    char* strerr = strerror(errno);
+    CREATE_ROS_EXCEPTION(ex1, TRBException, UDP_RECEIVE, strerr);
+    throw ex1;
+  }
 
+  fsize += n;
   
   //For now we return the raw data from the TRB
 
@@ -80,19 +91,9 @@ int DataChannelTRB::getNextFragment(u_int* buffer, int max_size, u_int* status, 
 //    }  
 //  }
 //int n = recvfrom(sock_receive,bufPtr, max_size*4, 0, (struct sockaddr *)&from,&fromlen);
-  *bufPtr++ = 0x22abcd22;  fsize += 4;
-  *bufPtr++ = 0x01020304;  fsize += 4;
-  *bufPtr++ = 0x05060708;  fsize += 4;
-  *bufPtr++ = 0x22abcd22;  fsize += 4;
 
-  if(fsize > max_size)
-  { 
-    fsize = max_size;
-    DEBUG_TEXT(DFDB_RCDEXAMPLE, 5, "DataChannelTRB::getNextFragment fsize > max_size.");
-  }
-   
   *status = S_OK;
-  
+
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 15, "DataChannelTRB::getNextFragment getNextFragment with fsize = " << fsize);
   return fsize;	// bytes ..
 }
