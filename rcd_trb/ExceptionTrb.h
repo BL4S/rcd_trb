@@ -24,15 +24,15 @@ namespace RCD
   public:
     enum ErrorCode 
     {
-      UDP_OPEN = 1,
+      UDP_OPEN = 100,
       UDP_BIND,
       UDP_CLOSE,
       UDP_RECEIVE
     };
-    TRBException(ErrorCode errorCode);
-    TRBException(ErrorCode errorCode, std::string description);
-    TRBException(ErrorCode errorCode, const ers::Context& context);
-    TRBException(ErrorCode errorCode, std::string description, const ers::Context& context);
+    TRBException(ErrorCode error);
+    TRBException(ErrorCode error, std::string description);
+    TRBException(ErrorCode error, const ers::Context& context);
+    TRBException(ErrorCode error, std::string description, const ers::Context& context);
     TRBException(const std::exception& cause, ErrorCode error, std::string description, const ers::Context& context);
 
     virtual ~TRBException() throw() { }
@@ -40,6 +40,22 @@ namespace RCD
   protected:
     virtual std::string getErrorString(u_int errorId) const;
   };
+
+  inline TRBException::TRBException(TRBException::ErrorCode error, std::string description)
+   : ROSException("TRBModule",error,getErrorString(error),description) { }
+
+  inline TRBException::TRBException(TRBException::ErrorCode error)
+   : ROSException("TRBModule",error,getErrorString(error)) { }
+
+  inline TRBException::TRBException(TRBException::ErrorCode error, std::string description, const ers::Context& context)
+   : ROSException("TRBModule",error,getErrorString(error),description,context) { }
+
+  inline TRBException::TRBException(TRBException::ErrorCode error, const ers::Context& context)
+   : ROSException("TRBModule",error,getErrorString(error),context) { }
+
+  inline TRBException::TRBException(const std::exception& cause, ErrorCode error, std::string description, const ers::Context& context)
+                                 : ROSException(cause, "TRBModule", error, getErrorString(error), description, context) {}
+
   
   inline std::string TRBException::getErrorString(u_int errorId) const 
   {

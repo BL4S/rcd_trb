@@ -92,6 +92,8 @@ void open_receiver(void)
    if (sock_receive < 0)
   {
      perror("Failed to create socket");
+     char* strerr =  strerror(errno);
+     printf(" errnostr =  %s\n", strerr);
 
    }
    length_receive = sizeof(server);
@@ -105,6 +107,8 @@ void open_receiver(void)
    if (ret <0)
    {
     perror("binding");
+     char* strerr =  strerror(errno);
+     printf(" errnostr =  %s\n", strerr);
    }
  }
 void open_sender(void)
