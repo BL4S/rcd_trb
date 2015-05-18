@@ -17,3 +17,5 @@ x86_64*
 
 #Test binary
 udp_sender_receiver
+client_udp
+server_udp
