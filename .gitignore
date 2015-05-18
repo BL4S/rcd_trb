@@ -19,3 +19,7 @@ x86_64*
 udp_sender_receiver
 client_udp
 server_udp
+
+#Binary data
+*.bin
+*.hld
