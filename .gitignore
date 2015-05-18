@@ -1,3 +1,12 @@
+#Vim temp files
+*.swp
+*.swp
+*.swo
+
+#SVN data
+.svn
+
+#CMT temp files
 cmt/setup.sh
 cmt/setup.csh
 cmt/cleanup.sh
@@ -5,4 +14,6 @@ cmt/cleanup.csh
 cmt/inst_files.*
 cmt/Makefile
 x86_64*
-*.swp
+
+#Test binary
+udp_sender_receiver
