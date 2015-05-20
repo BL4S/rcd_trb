@@ -96,42 +96,44 @@ void mainhelp(void)
 void open_receiver(void)
 /******************/
 {
-  int trbport;
-  struct sockaddr_in server;
-  int length_receive;
+    int trbport;
+    struct sockaddr_in server;
+    int length_receive;
 
     printf(" Port Number \n");
     trbport = getdecd(1234);
     printf(" Port Number = %d\n",trbport);
     
     sock_receive=socket(AF_INET, SOCK_DGRAM, 0);//create a raw socket to receive
-   if (sock_receive < 0)
-  {
-     perror("Failed to create socket");
-     char* strerr =  strerror(errno);
-     printf(" errnostr =  %s\n", strerr);
+    if (sock_receive < 0){
+        perror("Failed to create socket");
+        char* strerr =  strerror(errno);
+        printf(" errnostr =  %s\n", strerr);
+        exit(-1);
+    }
 
-   }
-   length_receive = sizeof(server);
-   bzero(&server,length_receive);
-   server.sin_family=AF_INET;
-   server.sin_addr.s_addr=INADDR_ANY;
-   server.sin_port=htons(trbport);
-   int ret = bind (sock_receive, (struct sockaddr *)&server,length_receive);
-   printf(" return = %d, errno = %d\n",ret,errno);
+    length_receive = sizeof(server);
+    bzero(&server,length_receive);
+    server.sin_family=AF_INET;
+    server.sin_addr.s_addr=INADDR_ANY;
+    server.sin_port=htons(trbport);
+    int ret = bind (sock_receive, (struct sockaddr *)&server,length_receive);
+    printf(" return = %d, errno = %d\n",ret,errno);
 
-   if (ret <0)
-   {
-    perror("binding");
-     char* strerr =  strerror(errno);
-     printf(" errnostr =  %s\n", strerr);
-   }
- }
+    if (ret <0){
+        perror("binding");
+        char* strerr =  strerror(errno);
+        printf(" errnostr =  %s\n", strerr);
+        exit(-1);
+    }
+}
+/******************/
 void open_sender(void)
+/******************/
 {
-  char ipAddress[20];
-  int trbport;
-  struct hostent *hp;
+    char ipAddress[20];
+    int trbport;
+    struct hostent *hp;
 
     printf(" IP address of server \n");
     getstrd(ipAddress,(char *)"137.138.89.83");
@@ -142,279 +144,290 @@ void open_sender(void)
 
     sock_send = socket(AF_INET, SOCK_DGRAM, 0);
     
-    if (sock_send < 0)
-    {
-      perror("socket_send");
-     }
+    if (sock_send < 0){
+        perror("socket_send");
+        exit(-1);
+    }
     server_send.sin_family = AF_INET;
     hp = gethostbyname(ipAddress);
-    if (hp==0)
-    {
-      perror("Unknown host");
+    if (hp==0){
+        perror("Unknown host");
+        exit(-1);
     }
     bcopy((char *)hp->h_addr, (char *)&server_send.sin_addr, hp->h_length);
     server_send.sin_port = htons(trbport);
     lengthOfSockaddr_send=sizeof(struct sockaddr_in);
 }
+/******************/
 void receive(void)
+/******************/
 {
-  int n_receive;
-  unsigned int  buf[1024];
-  int n;
-  socklen_t fromlen;
-  struct sockaddr_in from;
-  fromlen = sizeof(struct sockaddr_in);
+    int n_receive;
+    unsigned int  buf[1024];
+    int n_bytes;
+    socklen_t fromlen;
+    struct sockaddr_in from;
+    fromlen = sizeof(struct sockaddr_in);
   
-  printf ("Number of messages =");
-  n_receive=getdecd(1);
-  for (int i=0; i<n_receive; i++)
-  {
-  ////Receive  messages on the server
-  printf("Waiting for message...\n");
-  n = recvfrom(sock_receive,buf,1024,0,(struct sockaddr *)&from,&fromlen);
-  if (n < 0)
-   {
-     perror("Failed to receive the data");
-     exit(-1);
-   }
-   printf("Received a datagram with length %d\n",n);
-   for(int i=0; i<n/4 ; i++){
-   printf("word number %d = %d/%x\n", i, buf[i], buf[i]);
-   }
+    printf ("Number of messages =");
+    n_receive=getdecd(1);
+    for (int i=0; i<n_receive; i++){
+    ////Receive  messages on the server
+        printf("Waiting for message...\n");
+        n_bytes = recvfrom(sock_receive,buf,1024*sizeof(unsigned int),0,(struct sockaddr *)&from,&fromlen);
+        
+        if (n_bytes < 0){
+            perror("Failed to receive the data");
+            exit(-1);
+        }
+    printf("Received a datagram with length %d\n",n_bytes);
+    for(int i=0; i<n_bytes/4 ; i++){
+        printf("word number %d = %d/%x\n", i, buf[i], buf[i]);
+    }
   }
 }
+/******************/
 void send(void)
+/******************/
 {
-  int n_send;
-  int n_length;
-  int n_seconds;
-  int n;
-  unsigned int  buffer[1024];
+    int n_send;
+    int n_length;
+    int m_seconds;
+    int micro_seconds;
+    int n_bytes;
+    unsigned int  buffer[1024];
 
-  for (int i=0 ; i<1024; i++)
-    {
-      buffer[i]=i+3;
+    for (int i=0 ; i<1024; i++){
+        buffer[i]=i+3;
     }
     printf("Number of messages = ");
     n_send=getdecd(1);
     printf("Length of messages = ");
     n_length=getdecd(10);
-    printf("Number of seconds to sleep = ");
-    n_seconds=getdecd(0);
+
+    printf("Number of m_seconds to sleep = ");
+    m_seconds=getdecd(0);
+    micro_seconds=(m_seconds)*1000;
+
     printf("Going to send the message ...\n");
-  //Send a message to a server from client
-  for (int i=0; i<n_send; i++){
-  n = sendto(sock_send, (char *)buffer, n_length*4, 0, (struct sockaddr *)&server_send,lengthOfSockaddr_send);
-  if (n < 0)
-  {
-    perror("Failed to send the data");
-    exit(-1);
-  }
-  if(n_seconds >0)
-  {
-    usleep(n_seconds);
-  }
- }
+    //Send a message to a server from client
+    for (int i=0; i<n_send; i++){
+        n_bytes = sendto(sock_send, (char *)buffer, n_length*4, 0, (struct sockaddr *)&server_send,lengthOfSockaddr_send);
+        if (n_bytes < 0){
+            perror("Failed to send the data");
+            exit(-1);
+        }
+        if(m_seconds >0){
+            usleep(micro_seconds);
+        }
+    }
 }
+/******************/
 void send_TRB(void)
+/******************/
 {
-  int n_send;
-  int n_length;
-  int m_seconds;
-  int micro_seconds;
-  int n;
-  unsigned int  buffer[1024];
+    int n_send;
+    int n_length;
+    int m_seconds;
+    int micro_seconds;
+    int n_bytes;
+    unsigned int  buffer[1024];
 
-  printf("Number of messages = ");
-  n_send=getdecd(1);
-  printf("Number of m_seconds to sleep = ");
-  m_seconds=getdecd(0);
-  micro_seconds=(m_seconds)*1000;
+    printf("Number of messages = ");
+    n_send=getdecd(1);
+    printf("Number of m_seconds to sleep = ");
+    m_seconds=getdecd(0);
+    micro_seconds=(m_seconds)*1000;
 
-  //Send a message to a server from client
+    //Send a message to a server from client
 
-  for (int i=0; i<n_send; i++){
+    for (int i=0; i<n_send; i++){
+        float ran_01=float(rand())/RAND_MAX;
+        int ran_010 = 10*ran_01;
+        printf("ran_010=%d\n" ,ran_010);
 
-    float ran_01=float(rand())/RAND_MAX;
-    int ran_010 = 10*ran_01;
-    printf("ran_010=%d\n" ,ran_010);
+        buffer[0]=(50+ran_010)*4;
+        n_length = buffer[0];
 
-    buffer[0]=(50+ran_010)*4;
-    n_length = buffer[0];
+        for (int j=1 ; j<n_length/4; j++){
+            buffer[j]=j+3;
+        }
 
-    for (int j=1 ; j<n_length/4; j++)
-      {
-        buffer[j]=j+3;
-      }
+        printf("Going to send the message ...\n");
 
-    printf("Going to send the message ...\n");
+        n_bytes = sendto(sock_send, (char *)buffer, n_length , 0, (struct sockaddr *)&server_send,lengthOfSockaddr_send);
 
-    n = sendto(sock_send, (char *)buffer, n_length , 0, (struct sockaddr *)&server_send,lengthOfSockaddr_send);
-
-    if (n < 0)
-    {
-      perror("Failed to send the data");
-      exit(-1);
+        if (n_bytes < 0){
+            perror("Failed to send the data");
+            exit(-1);
+        }
+        if(m_seconds >0){
+            usleep(micro_seconds);
+        }
     }
-    if(m_seconds >0)
-    {
-      usleep(micro_seconds);
-    }
-  }
 }
+/******************/
 void open_TRB_File(void)
+/******************/
 {
-  unsigned int file_buf[256];
+    unsigned int file_buf[256];
 
-  fd_file = fopen("network.bin","r");
+    fd_file = fopen("network.bin","r");
 
-  if ( fd_file < 0)
-    {
-      perror(" failed to open file");
-      exit(-1);
+    if ( fd_file < 0){
+        perror(" failed to open file");
+        exit(-1);
     }
+    printf(" Opened network.bin, fd_file = %d\n",fd_file);
+
 }
+/******************/
 void send_TRB_File(void)
+/******************/
+
+/* assumption: HADES file format i.e. first word is length in bytes */
 {
-  //unsigned int trb_header[3];
-  unsigned int trb_data[256];
-  int n_words;
+    //unsigned int trb_header[3];
+    unsigned int trb_data[1024];
+    int n_words;
 
-      printf("fd_file = %d\n",fd_file);
+    printf("fd_file = %d\n",fd_file);
 
-      n_words = fread(trb_data,sizeof(unsigned int),3,fd_file); // read three integers to our buffer
-      printf("n_words : when reading header = %d\n",n_words);
-      if ( n_words < 0) 
-        {
-          perror(" failed to read file");
-          exit(-1);
+    printf("Number of messages = ");
+    int n_send=getdecd(1);
+
+    for (int loop=0; loop<n_send; loop++){
+
+        n_words = fread(trb_data,sizeof(unsigned int),1,fd_file); // read length
+        printf("n_words : when reading header from file = %d\n",n_words);
+        if ( n_words < 0) {
+            perror(" failed to read file");
+            exit(-1);
         }
-      for (int i = 0; i<n_words; i++)
-        {
-          printf(" trb_data[%d] = %x \n",i,trb_data[i]);
-        }
-
-      if (trb_data[1]!=0x30063)
-        {
-          printf("trb_data[1] = %x\n");
-          exit(-1);
+        for (int i = 0; i<n_words; i++){
+            printf(" trb_data[%d] = %x \n",i,trb_data[i]);
         }
 
-      int n_length = trb_data[2]/sizeof(unsigned int) - 3;
-      n_words = fread(&trb_data[3],sizeof(unsigned int),
-      n_length,
-      fd_file); // read event data
-
-      if ( n_words < n_length)
-        {
-          printf(" failed to read file\n");
-          printf("n_words : %d\n",n_words);
-          printf("n_length :%d\n",n_length);
-          exit(-1);
+        if (trb_data[0] > 1024*sizeof(unsigned int)) {
+            exit(-1);
         }
 
-      for (int i = 3; i<(n_words+3); i++)
-        {
-          printf(" trb_data[%d] = %x\n",i,trb_data[i]);
+        int n_length = trb_data[0]/sizeof(unsigned int) -1;
+        n_words = fread(&trb_data[1],sizeof(unsigned int), n_length, fd_file); // read event data
+
+        if ( n_words < n_length){
+            printf(" failed to read file\n");
+            printf("n_words : %d\n",n_words);
+            printf("n_length :%d\n",n_length);
+            exit(-1);
         }
 
-      printf("Going to send the message ...\n");
-
-      int n = sendto(sock_send, (char *)trb_data, trb_data[2] , 0, (struct sockaddr *)&server_send,lengthOfSockaddr_send);
-
-      if (n < 0)
-        {
-          perror("Failed to send the data");
-          exit(-1);
+        for (int i = 0; i<(trb_data[0]/sizeof(unsigned int)); i++){
+            printf(" trb_data[%d] = %x\n",i,trb_data[i]);
         }
+
+        printf("Going to send the message ...\n");
+
+        int n_bytes = sendto(sock_send, (char *)trb_data, trb_data[0] ,
+                         0, (struct sockaddr *)&server_send,lengthOfSockaddr_send);
+
+        if (n_bytes < 0){
+            perror("Failed to send the data");
+            exit(-1);
+        }
+  }
+ 
 }
+/******************/
 void receive_TRB_File(void)
+/******************/
 {
-  int trb_recive;
-  unsigned int  trb_data[256];
-  int n_bytes;
-  socklen_t fromlen;
-  struct sockaddr_in from;
-  fromlen = sizeof(struct sockaddr_in);
+    int trb_recive;
+    unsigned int  trb_data[1024];
+    int n_bytes;
+    socklen_t fromlen;
+    struct sockaddr_in from;
+    fromlen = sizeof(struct sockaddr_in);
   
-  printf ("Number of messages =");
-  trb_recive=getdecd(1);
-  for (int i=0; i<trb_recive; i++)
-  {
-  ////Receive  messages on the server
+    printf ("Number of messages =");
+    trb_recive=getdecd(1);
+
+    for (int i=0; i<trb_recive; i++){
+    ////Receive  messages on the server
     printf("Waiting for message...\n");
 
-    n_bytes = recvfrom(sock_receive,trb_data,3*sizeof(unsigned int),
+    n_bytes = recvfrom(sock_receive,trb_data,sizeof(unsigned int),
                      MSG_PEEK, (struct sockaddr *)&from,&fromlen);
   
-    if (n_bytes < 0)
-      {
+    if (n_bytes < 0){
         perror("Failed to receive the data");
         exit(-1);
-      }
+    }
     printf("Received a datagram with length %d\n",n_bytes);
   
-    for(int i=0; i<n_bytes/sizeof(unsigned int) ; i++)
-      {
+    for(int i=0; i<n_bytes/sizeof(unsigned int) ; i++){
       
         printf("word number %d = %d/%x\n", i, trb_data[i], trb_data[i]);
-      }
+    }
 
-    int n_max_bytes = trb_data[2];
-    printf("Max bytes = %d\n" , n_max_bytes);
+    if (trb_data[0] > 1024*sizeof(unsigned int)) {
+        exit(-1);
+    }
     
-    n_bytes = recvfrom(sock_receive,trb_data, n_max_bytes, 
+    
+    n_bytes = recvfrom(sock_receive,trb_data, trb_data[0], 
                       0, (struct sockaddr *)&from,&fromlen);
   
-    if (n_bytes < 0)
-      {
+    if (n_bytes < 0){
         perror("Failed to receive the data");
         exit(-1);
-      }
+    }
     
     printf("Received a datagram with length %d\n",n_bytes);
   
-    for(int i=0; i<n_bytes/sizeof(unsigned int) ; i++)
-      {
+    for(int i=0; i<n_bytes/sizeof(unsigned int) ; i++){
         printf("word number %d = %d/%x\n", i, trb_data[i], trb_data[i]);
-      }
+    }
   }
 }
+/******************/
 void close_TRB_File(void)
+/******************/
 {
-  unsigned int file_buf[256];
-  fclose(fd_file);
+    unsigned int file_buf[256];
+    fclose(fd_file);
 
-  if ( fd_file < 0)
-    {
-      perror(" failed to close file");
-      exit(-1);
+    if ( fd_file < 0){
+        perror(" failed to close file");
+        exit(-1);
     }
 }
 
 //close the socket
 
+/******************/
 void close_receiver(void)
+/******************/
 {
-  int  ret;
-  ret = close(sock_receive);
-  printf(" return = %d, errno = %d\n",ret,errno);
+    int  ret;
+    ret = close(sock_receive);
+    printf(" return = %d, errno = %d\n",ret,errno);
 
-  if (ret <0)
-   {
-      perror("close_error");
-   }
+    if (ret <0){
+        perror("close_error");
+    }
 }
 
+/******************/
 void close_sender(void)
+/******************/
 {
-  int ret;
-  ret = close(sock_send);
-  printf(" return = %d, errno = %d\n",ret,errno);
+    int ret;
+    ret = close(sock_send);
+    printf(" return = %d, errno = %d\n",ret,errno);
   
-  if (ret <0)
-    {
-      perror("close_error");
+    if (ret <0){
+        perror("close_error");
     }
 }
 
