@@ -135,7 +135,7 @@ void open_receiver(void)
 void flush_receiver(void)
 /************************/
 {
-  unsigned int  buf[256];
+  unsigned int  buf[512];
   int n_bytes;
   socklen_t fromlen;
   struct sockaddr_in from;
@@ -143,8 +143,9 @@ void flush_receiver(void)
 
 //  do {
     //// Read 1kbyte non-blocking
-    printf("Flush 1 kByte ...\n");
-    n_bytes = recvfrom(sock_receive,buf,256*sizeof(unsigned int),MSG_DONTWAIT,(struct sockaddr *)&from,&fromlen);
+    printf("Flush 2 kByte ...\n");
+    errno = 0;
+    n_bytes = recvfrom(sock_receive,buf,512*sizeof(unsigned int),MSG_DONTWAIT,(struct sockaddr *)&from,&fromlen);
     perror(" flush");
     printf(" # bytes read = %d\n", n_bytes);
     printf(" errno = %d\n", errno);
@@ -154,7 +155,7 @@ void flush_receiver(void)
       }
     }  
 
-//  } while (n_bytes <= 1024  || errno != EAGAIN);
+//  } while (errno != EAGAIN);
 }
 /******************/
 void open_sender(void)
@@ -192,7 +193,7 @@ void receive(void)
 /******************/
 {
     int n_receive;
-    unsigned int  buf[1024];
+    unsigned int  buf[8192];
     int n_bytes;
     socklen_t fromlen;
     struct sockaddr_in from;
@@ -203,7 +204,7 @@ void receive(void)
     for (int i=0; i<n_receive; i++){
     ////Receive  messages on the server
         printf("Waiting for message...\n");
-        n_bytes = recvfrom(sock_receive,buf,1024*sizeof(unsigned int),0,(struct sockaddr *)&from,&fromlen);
+        n_bytes = recvfrom(sock_receive,buf,8192*sizeof(unsigned int),0,(struct sockaddr *)&from,&fromlen);
         
         if (n_bytes < 0){
             perror("Failed to receive the data");
