@@ -192,7 +192,7 @@ void receive(void)
 /******************/
 {
     int n_receive;
-    unsigned int  buf[1024];
+    unsigned int  buf[4096];
     int n_bytes;
     socklen_t fromlen;
     struct sockaddr_in from;
@@ -203,16 +203,29 @@ void receive(void)
     for (int i=0; i<n_receive; i++){
     ////Receive  messages on the server
         printf("Waiting for message...\n");
-        n_bytes = recvfrom(sock_receive,buf,1024*sizeof(unsigned int),0,(struct sockaddr *)&from,&fromlen);
+        n_bytes = recvfrom(sock_receive,buf,4096*sizeof(unsigned int),0,(struct sockaddr *)&from,&fromlen);
         
         if (n_bytes < 0){
             perror("Failed to receive the data");
             exit(-1);
         }
     printf("Received a datagram with length %d\n",n_bytes);
-    for(int i=0; i<n_bytes/4 ; i++){
-        printf("word number %d = %d/%x\n", i, buf[i], buf[i]);
+    if (n_bytes <= 800) {  /* print all */
+      for(int i=0; i<n_bytes/4 ; i++){
+          printf("word number %d = %d/%x\n", i, buf[i], buf[i]);
+      }
     }
+    else {  /* print first 100 and last 100 */
+      printf(" first 100 words:\n");
+      for(int i=0; i<400/4 ; i++){
+          printf("word number %d = %d/%x\n", i, buf[i], buf[i]);
+      }
+      printf(" last 100 words:\n");
+      for(int i=((n_bytes/4) -100); i<n_bytes/4 ; i++){
+          printf("word number %d = %d/%x\n", i, buf[i], buf[i]);
+      }
+    }
+
   }
 }
 /******************/
