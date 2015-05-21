@@ -24,6 +24,7 @@
 /**************/
 void mainhelp(void);
 void open_receiver(void);
+void flush_receiver(void);
 void open_sender(void);
 void receive(void);
 void send(void);
@@ -53,8 +54,9 @@ int main(int argc, char **argv)
     printf("Select an option:\n");
     printf("   100 Help\n");
     printf("   1 Open receiver\n");
-    printf("   2 Receive messages\n");
-    printf("   3 Close receiver\n");
+    printf("   2 Flush receiver\n");
+    printf("   3 Receive messages\n");
+    printf("   4 Close receiver\n");
     printf("   10 Open sender\n");
     printf("   11 Send messages\n");
     printf("   12 Close sender\n");
@@ -68,8 +70,9 @@ int main(int argc, char **argv)
     fun = getdecd(fun);
     if (fun == 100) mainhelp();
     if (fun == 1) open_receiver();
-    if (fun == 2) receive();
-    if (fun == 3) close_receiver();
+    if (fun == 2) flush_receiver();
+    if (fun == 3) receive();
+    if (fun == 4) close_receiver();
     if (fun == 10) open_sender();
     if (fun == 11) send();
     if (fun == 12) close_sender();
@@ -126,6 +129,32 @@ void open_receiver(void)
         printf(" errnostr =  %s\n", strerr);
         exit(-1);
     }
+}
+
+/************************/
+void flush_receiver(void)
+/************************/
+{
+  unsigned int  buf[256];
+  int n_bytes;
+  socklen_t fromlen;
+  struct sockaddr_in from;
+  fromlen = sizeof(struct sockaddr_in);
+
+//  do {
+    //// Read 1kbyte non-blocking
+    printf("Flush 1 kByte ...\n");
+    n_bytes = recvfrom(sock_receive,buf,256*sizeof(unsigned int),MSG_DONTWAIT,(struct sockaddr *)&from,&fromlen);
+    perror(" flush");
+    printf(" # bytes read = %d\n", n_bytes);
+    printf(" errno = %d\n", errno);
+    if (n_bytes > 0) {
+      for(int i=0; i<3 ; i++){
+          printf("word number %d = %d/%x\n", i, buf[i], buf[i]);
+      }
+    }  
+
+//  } while (n_bytes <= 1024  || errno != EAGAIN);
 }
 /******************/
 void open_sender(void)
@@ -323,7 +352,7 @@ void send_TRB_File(void)
         }
 
         for (int i = 0; i<(trb_data[0]/sizeof(unsigned int)); i++){
-            printf(" trb_data[%d] = %x\n",i,trb_data[i]);
+            printf(" trb_data[%d] = %d  %x\n",i,trb_data[i],trb_data[i]);
         }
 
         printf("Going to send the message ...\n");
