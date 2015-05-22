@@ -328,7 +328,7 @@ void open_TRB_File(void)
 void send_TRB_File(void)
 /******************/
 
-/* assumption: HADES file format i.e. first word is length in bytes */
+/* assumption: 15/5/22 : TRB single event network format  */
 {
     //unsigned int trb_header[3];
     unsigned int trb_data[1024];
@@ -354,8 +354,9 @@ void send_TRB_File(void)
         if (trb_data[0] > 1024*sizeof(unsigned int)) {
             exit(-1);
         }
+        int length_packet = trb_data[0] + 8* sizeof(unsigned int);
 
-        int n_length = trb_data[0]/sizeof(unsigned int) -1;
+        int n_length = length_packet/sizeof(unsigned int) -1;
         n_words = fread(&trb_data[1],sizeof(unsigned int), n_length, fd_file); // read event data
 
         if ( n_words < n_length){
@@ -365,13 +366,13 @@ void send_TRB_File(void)
             exit(-1);
         }
 
-        for (int i = 0; i<(trb_data[0]/sizeof(unsigned int)); i++){
+        for (int i = 0; i<(n_length+1); i++){
             printf(" trb_data[%d] = %d  %x\n",i,trb_data[i],trb_data[i]);
         }
 
         printf("Going to send the message ...\n");
 
-        int n_bytes = sendto(sock_send, (char *)trb_data, trb_data[0] ,
+        int n_bytes = sendto(sock_send, (char *)trb_data,(n_length + 1)* sizeof(unsigned int),
                          0, (struct sockaddr *)&server_send,lengthOfSockaddr_send);
 
         if (n_bytes < 0){
@@ -417,8 +418,8 @@ void receive_TRB_File(void)
         exit(-1);
     }
     
-    
-    n_bytes = recvfrom(sock_receive,trb_data, trb_data[0], 
+   int n_max_bytes = trb_data[0]+8*sizeof(unsigned int); 
+    n_bytes = recvfrom(sock_receive,trb_data, n_max_bytes, 
                       0, (struct sockaddr *)&from,&fromlen);
   
     if (n_bytes < 0){
