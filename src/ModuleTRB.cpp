@@ -69,6 +69,7 @@ void ModuleTRB::configure(const daq::rc::TransitionCmd&)
   struct sockaddr_in server;
 
   //open UDP port...
+  errno = 0;
   m_socket = socket(AF_INET, SOCK_DGRAM, 0);
   if (m_socket < 0)
   {
@@ -83,8 +84,8 @@ void ModuleTRB::configure(const daq::rc::TransitionCmd&)
   server.sin_family=AF_INET;
   server.sin_addr.s_addr=INADDR_ANY;
   server.sin_port=htons(m_port);
+  errno = 0;
   int ret = bind(m_socket, (struct sockaddr *)&server,length_receive);
-
   if (ret <0)
   {
     DEBUG_TEXT(DFDB_RCDEXAMPLE, 5, "ModuleTRB::configure: Failed to bind socket");
@@ -143,12 +144,30 @@ void ModuleTRB::disconnect(const daq::rc::TransitionCmd&)
 
 /***********************************************************/    
 void ModuleTRB::prepareForRun(const daq::rc::TransitionCmd&)
-/***********************************************************/    
+/***********************************************************/
 {
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 15, "ModuleTRB::prepareForRun: Entered");
- 
+
   //Tell the FEB to forget old data thay it may have buffered
- 
+
+// flush input
+  unsigned int  buf[512];
+  int n_while = 0;
+  int n_bytes;
+  do {
+    errno = 0;
+    n_bytes = recv(m_socket,buf,512*sizeof(unsigned int),MSG_DONTWAIT);
+    if (n_bytes <0 && errno != EAGAIN)
+    {
+      DEBUG_TEXT(DFDB_RCDEXAMPLE, 5, "ModuleTRB::configure: Error on flush ");
+      char* strerr = strerror(errno);
+      CREATE_ROS_EXCEPTION(ex1, TRBException, UDP_OPEN, strerr);
+      throw ex1;
+    }
+    n_while++;
+  } while (errno != EAGAIN);
+  DEBUG_TEXT(DFDB_RCDEXAMPLE, 15, "ModuleTRB::prepareForRun: # packets flushed = " << (n_while-1));
+
   DEBUG_TEXT(DFDB_RCDEXAMPLE, 15, "ModuleTRB::prepareForRun: Done");
 }
 
